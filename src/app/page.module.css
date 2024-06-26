@@ -1,0 +1,19 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  min-height: 100vh;
+}
+
+.button {
+  background: white;
+  border: none;
+  width: 4rem;
+  color: red;
+  padding: 0.2rem;
+  border-radius: 0.3rem;
+  font-weight: bold;
+  cursor: pointer;
+}
