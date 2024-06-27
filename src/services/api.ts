@@ -1,9 +1,9 @@
 import axios, {AxiosError} from 'axios'
-import {parseCookies, setCookie} from 'nookies'
+import { parseCookies, setCookie} from 'nookies'
+import { onLogout } from '@/contexts/AuthContext'
 
 let cookies = parseCookies()
 let isRefreshing = false
-
 
 let failedRequestQueue: any[] = []
 interface ErrorResponse {
@@ -76,7 +76,9 @@ api.interceptors.response.use(response => {
         })
 
     } else {
-        // deslogar o usuário
+        onLogout()
     }
    }
+
+   return Promise.reject(error)
 })
