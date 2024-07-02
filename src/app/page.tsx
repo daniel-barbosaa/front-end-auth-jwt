@@ -1,47 +1,23 @@
-'use client'
-import { FormEvent, useContext, useEffect, useState } from "react";
-import styles from "./page.module.css";
-import { AuthContext } from "@/contexts/AuthContext";
-import {parseCookies} from 'nookies'
-import { useRouter } from "next/navigation";
-export default function Home() {
-  const {signIn} = useContext(AuthContext)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const router = useRouter();
+import { FormSignIn } from "../components/formSignIn";
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
-  useEffect (() => {
-    const verifyIfExistUserLogged = () => {
-      const cookies = parseCookies()
+async function getData() {
+  const cookiesData = cookies()
 
-      if(cookies["nextauth.token"]){
-        router.push('/dashboard');
-      }
-    }
-    verifyIfExistUserLogged()
-  }, [])
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-    const data = {
-      email,
-      password
-    }
-    await signIn(data)
+  if(cookiesData.get("nextauth.token")){
+    redirect('/dashboard')
   }
+  return console.log(cookiesData.get("nextauth.token")) 
+}
 
+export default async function Home() {
+  await getData()
 
   return (
-    <main className={styles.main}>
-      <input type="text" value={email}  onChange={(e) => {
-        setEmail(e.target.value)
-      }} />
-      <input type="password" value={password} onChange={(e) => {
-        setPassword(e.target.value)
-      }} />
-      <button onClick={handleSubmit} className={styles.button}>Login</button>
-    </main>
+    <FormSignIn/>
   );
 }
+
 
 
