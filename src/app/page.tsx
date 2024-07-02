@@ -1,14 +1,25 @@
 'use client'
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { AuthContext } from "@/contexts/AuthContext";
-import { GetServerSideProps } from "next";
 import {parseCookies} from 'nookies'
-import { redirect } from "react-router-dom";
+import { useRouter } from "next/navigation";
 export default function Home() {
   const {signIn} = useContext(AuthContext)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const router = useRouter();
+
+  useEffect (() => {
+    const verifyIfExistUserLogged = () => {
+      const cookies = parseCookies()
+
+      if(cookies["nextauth.token"]){
+        router.push('/dashboard');
+      }
+    }
+    verifyIfExistUserLogged()
+  }, [])
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()

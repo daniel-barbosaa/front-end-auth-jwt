@@ -4,7 +4,7 @@ import { api } from "@/services/api"
 import { useContext, useEffect } from "react"
 
 
-
+// Tentar recuperar o token no server-side de alguma forma
 export default function Dashboard() {    
     const {user} = useContext(AuthContext)
     useEffect(() => {
@@ -17,21 +17,3 @@ export default function Dashboard() {
         <h1>Dashboard:{user?.email}</h1>
     )
 }
-
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-
-//     const cookies = parseCookies(ctx)
-  
-//     if(cookies['nextauth.token']) {
-//       return {
-//        redirect : {
-//         destination: '/dashboard',
-//         permanent: false
-//        }
-//       }
-//     }
-  
-//     return{
-//       props: {}
-//     }
-//   }
