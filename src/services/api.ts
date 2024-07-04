@@ -1,6 +1,7 @@
 import axios, {AxiosError} from 'axios'
-import { parseCookies, setCookie} from 'nookies'
-import { onLogout } from '@/contexts/AuthContext'
+import { destroyCookie, parseCookies, setCookie} from 'nookies'
+import { redirect } from 'react-router-dom'
+
 
 let cookies = parseCookies()
 let isRefreshing = false
@@ -55,6 +56,11 @@ api.interceptors.response.use(response => {
                     request.onFailed(err)
                 }) 
                 failedRequestQueue = []
+                
+                destroyCookie(undefined , 'nextauth.token')
+                destroyCookie(undefined , 'nextauth.refreshToken')
+                redirect('/')
+
             }).finally(() => {
                 isRefreshing = false
             })
@@ -76,7 +82,9 @@ api.interceptors.response.use(response => {
         })
 
     } else {
-        onLogout()
+        destroyCookie(undefined , 'nextauth.token')
+        destroyCookie(undefined , 'nextauth.refreshToken')
+        redirect('/')
     }
    }
 

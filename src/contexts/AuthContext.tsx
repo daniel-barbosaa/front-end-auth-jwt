@@ -1,16 +1,8 @@
-
+"use client"
 import { api } from "@/services/api";
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {setCookie, parseCookies, destroyCookie} from 'nookies'
-import { redirect } from "react-router-dom";
-
-// consertar esse erro, os hook nao pode ser chamado fora de um component jsx
-export function onLogout () {
-    destroyCookie(undefined , 'nextauth.token')
-    destroyCookie(undefined , 'nextauth.refreshToken')
-    redirect('/')
-}
 
 type User = {
     email: string,

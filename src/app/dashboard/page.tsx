@@ -1,19 +1,38 @@
-"use client"
-import { AuthContext } from "@/contexts/AuthContext"
-import { api } from "@/services/api"
-import { useContext, useEffect } from "react"
+import { DashboardClient } from "@/components/Dashboard";
+import { api } from "@/services/api";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 
-// Tentar recuperar o token no server-side de alguma forma
-export default function Dashboard() {    
-    const {user} = useContext(AuthContext)
-    useEffect(() => {
-        api.get('/me').then(response => console.log(response)).catch((error) => {
-               console.log(error)
-            })
-    })
+// Tentar fazer a validação de usuário no lado do (server) Servidor
+async function getData() {
 
+    const cookiesData = cookies()
+    if(!cookiesData.get("nextauth.token")){
+      redirect('/')
+    }
+
+    const cookie = cookiesData.get("nextauth.token")?.value
+
+    // Tentar passar o token para a respectiva rota....
+
+    // const response = api.get('/me')
+    // try {
+    //   const response = api.get('/me', {
+    //     headers: {
+    //       Authorization: `Bearer ${cookie}`
+    //     }
+    //   })
+    //   return response
+    // }catch(err){
+    //   console.log(err)
+    // }
+}
+
+export default async function Dashboard() {    
+    await getData()
+   
     return(
-        <h1>Dashboard:{user?.email}</h1>
+        <DashboardClient/>
     )
 }
