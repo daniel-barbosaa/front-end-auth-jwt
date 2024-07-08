@@ -1,6 +1,7 @@
 "use client"
 import { AuthContext } from "@/contexts/AuthContext"
-import { api } from "@/services/api"
+import { api } from "@/services/apiClient"
+
 import { useContext, useEffect } from "react"
 
 export function DashboardClient() {    

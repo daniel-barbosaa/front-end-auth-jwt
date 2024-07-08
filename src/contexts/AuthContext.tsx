@@ -1,8 +1,9 @@
 "use client"
-import { api } from "@/services/api";
+
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {setCookie, parseCookies, destroyCookie} from 'nookies'
+import { api } from "@/services/apiClient";
 
 type User = {
     email: string,

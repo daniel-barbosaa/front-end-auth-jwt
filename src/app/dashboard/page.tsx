@@ -1,32 +1,34 @@
 import { DashboardClient } from "@/components/Dashboard";
-import { api } from "@/services/api";
-import { cookies } from "next/headers";
+import { api } from "@/services/apiClient";
+
+import { cookies, headers } from 'next/headers'
 import { redirect } from "next/navigation";
+
+
 
 
 // Tentar fazer a validação de usuário no lado do (server) Servidor
 async function getData() {
+    let token = cookies().get('nextauth.token')?.value
 
     const cookiesData = cookies()
     if(!cookiesData.get("nextauth.token")){
       redirect('/')
     }
 
-    const cookie = cookiesData.get("nextauth.token")?.value
+   let refreshToken = token
+    try{
+    
+        api.defaults.headers['Authorization'] = `Bearer ${refreshToken}`
+        const teste = await api.get('/me')
 
-    // Tentar passar o token para a respectiva rota....
+        console.log(teste.data)
+    }catch(err){
+        console.log(err)
+    }
 
-    // const response = api.get('/me')
-    // try {
-    //   const response = api.get('/me', {
-    //     headers: {
-    //       Authorization: `Bearer ${cookie}`
-    //     }
-    //   })
-    //   return response
-    // }catch(err){
-    //   console.log(err)
-    // }
+   
+
 }
 
 export default async function Dashboard() {    
