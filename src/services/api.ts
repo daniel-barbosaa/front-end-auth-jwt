@@ -27,21 +27,18 @@ export function setupApiClient(ctx: undefined) {
     }, (error: AxiosError<ErrorResponse>) => { 
        if(error.response?.status === 401){
         if(error.response.data?.code === "token.expired"){
-            cookies = parseCookies(ctx)
+            cookies = parseCookies()
     
             const {'nextauth.refreshToken': refreshToken} = cookies
-           
             const originalConfig = error.config 
     
             if(!isRefreshing) {
                 isRefreshing = true
-
-                console.log('refresh')
+              
                 api.post('refresh', {
                     refreshToken
                 }).then(response => {
                     const {token} = response.data
-        
                     setCookie(ctx, "nextauth.token", token, {
                         maxAge: 60 * 60 * 24 * 30,
                         path: '/' // 1 mounth
