@@ -18,7 +18,7 @@ type SignInCredentials = {
 type AuthContextData = {
     signIn(credential: SignInCredentials): Promise<void>,
     isAuthenticated: boolean,
-    user: User
+    user: User | null
 }
 
 type AuthProviderProps = {
@@ -31,7 +31,7 @@ export const AuthContext = createContext({} as AuthContextData)
 
 export function AuthProvider({children}: AuthProviderProps) {
     const router = useRouter()
-    const [user, setUser] = useState<User>({} as User) 
+    const [user, setUser] = useState<User | null>(null) 
     const isAuthenticated = !!user
 
     useEffect(() => {
@@ -56,7 +56,6 @@ export function AuthProvider({children}: AuthProviderProps) {
             email,
             password
         })
-
         const {token, refreshToken,permissions, roles} = response.data
 
         setCookie(undefined, "nextauth.token", token, {
