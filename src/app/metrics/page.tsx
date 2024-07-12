@@ -28,7 +28,6 @@ async function getData() {
                 permissions,
                 roles,
             })
-
             if(!userHasValidPermissions){
                 redirect('/dashboard')
             }

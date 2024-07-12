@@ -1,5 +1,4 @@
 "use client"
-
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {setCookie, parseCookies, destroyCookie} from 'nookies'
@@ -16,6 +15,7 @@ type SignInCredentials = {
     password: string
 }
 type AuthContextData = {
+    signOut: () => void,
     signIn(credential: SignInCredentials): Promise<void>,
     isAuthenticated: boolean,
     user: User | null
@@ -25,14 +25,33 @@ type AuthProviderProps = {
     children: ReactNode
 }
 
-
-
 export const AuthContext = createContext({} as AuthContextData)
 
 export function AuthProvider({children}: AuthProviderProps) {
     const router = useRouter()
     const [user, setUser] = useState<User | null>(null) 
     const isAuthenticated = !!user
+
+    const auth = new BroadcastChannel("auth");
+
+    function signOut() {
+        destroyCookie(undefined , 'nextauth.token')
+        destroyCookie(undefined , 'nextauth.refreshToken')
+        router.push('/')
+        auth.postMessage("signOut");
+    }
+
+    useEffect(() => {
+        auth.onmessage = (message) => {
+           switch(message.data){
+            case 'signOut':
+                signOut()
+                break;
+                default:
+                    break;
+           }
+          };
+    },[])
 
     useEffect(() => {
         const {'nextauth.token': token} = parseCookies()
@@ -80,7 +99,7 @@ export function AuthProvider({children}: AuthProviderProps) {
        }
     }
     return (
-        <AuthContext.Provider value={{signIn, isAuthenticated, user}}>
+        <AuthContext.Provider value={{signIn, isAuthenticated, user, signOut}}>
             {children}
         </AuthContext.Provider>
     )
