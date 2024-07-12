@@ -1,12 +1,14 @@
 import { cookies } from "next/headers"
 import { jwtDecode } from "jwt-decode";
+import { validateUserPermissons } from "@/utils/validateUserPermissions";
+import { redirect } from "next/navigation";
 
 
 interface Decoded {
     permissions: string[],
     roles: string[],
 }
-// Terminar validaçao de permissao pelo (SERVER)
+// Terminar validaçao de permissao pelo (SERVER) mnt 7
 async function getData() {
     const token  = cookies().get('nextauth.token')?.value 
 
@@ -15,17 +17,25 @@ async function getData() {
         roles: ['administrator']
     }
 
-    
+    const {permissions, roles} = isPermission
 
-    console.log(token)
-   
-    if(token) {
-        const decoded :Decoded = jwtDecode(token)
-        console.log(decoded)
-    } else{
-        console.log('Not get´s token')
+    if(isPermission){
+        if(token) {
+            const decoded = jwtDecode<{permissions: string[], roles: string[]}>(token)
+            const user = decoded
+            const userHasValidPermissions = validateUserPermissons({
+                user,
+                permissions,
+                roles,
+            })
+
+            if(!userHasValidPermissions){
+                redirect('/dashboard')
+            }
+        } else{
+            console.log('Not get´s token')
+        }
     }
- 
 
 }
 
